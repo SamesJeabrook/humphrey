@@ -1,5 +1,5 @@
 ---
-description: "Task list for local home automation service"
+description: 'Task list for local home automation service'
 ---
 
 # Tasks: Local Home Automation Service
