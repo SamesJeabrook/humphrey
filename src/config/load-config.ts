@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { readFile } from 'node:fs/promises';
 import { configSchema, type AppConfig } from './config-schema.js';
 

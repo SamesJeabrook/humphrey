@@ -101,8 +101,14 @@ stored.
 Set the Home Assistant token without placing it in source control:
 
 ```bash
-export HUMPHREY_HOME_ASSISTANT_TOKEN='your-local-home-assistant-token'
+cp .env.example .env
+# Edit .env and replace PASTE_YOUR_HOME_ASSISTANT_TOKEN_HERE with your token.
 ```
+
+`homeAssistant.tokenEnv` in `config/local.config.json` should contain only the name
+`HUMPHREY_HOME_ASSISTANT_TOKEN`, not the token itself. Humphrey loads the token from
+the ignored `.env` file when it starts. For one-off shell sessions, an `export`
+command also works.
 
 For a persistent user-session configuration, place the export in the appropriate local
 shell or service environment rather than committing it to the repository.
@@ -151,7 +157,8 @@ references.
 7. Verify no device action occurs and Humphrey asks for the magic word.
 8. Verify the spoken response uses the local audio output associated with the request.
 
-See [docs/setup.md](docs/setup.md) and the [feature quickstart](specs/001-local-home-automation/quickstart.md)
+See [docs/setup.md](docs/setup.md), the [local services readiness checklist](docs/local-services-readiness.md),
+the [troubleshooting guide](docs/troubleshooting.md), and the [feature quickstart](specs/001-local-home-automation/quickstart.md)
 for the full setup and validation expectations.
 
 ## Privacy and Network Boundaries
