@@ -1,6 +1,4 @@
 import Fastify from 'fastify';
-import fastifyStatic from '@fastify/static';
-import { join } from 'node:path';
 import { loadConfig, requireSecret } from './config/load-config.js';
 import { HomeAssistantAdapter } from './adapters/home-assistant.js';
 import { OllamaAdapter } from './adapters/ollama.js';
@@ -12,6 +10,7 @@ import { registerRequestHistoryRoutes } from './api/request-history-routes.js';
 import { registerConfigRoutes } from './api/config-routes.js';
 import { registerEventServer } from './api/event-server.js';
 import { RequestHistoryStore } from './domain/request-history.js';
+import { registerStaticServing } from './api/static-serving.js';
 
 export async function buildApp() {
   const config = await loadConfig();
@@ -22,13 +21,12 @@ export async function buildApp() {
   const orchestrator = new RequestOrchestrator(config.devices, homeAssistant, ollama, speech);
   const endpoint = { id: 'main', inputDevice: config.audio.inputDevice, outputDevice: config.audio.outputDevice, fallbackOutput: config.audio.fallbackOutput ?? undefined, displayAvailable: false };
   const history = new RequestHistoryStore('data/request-history.json', config.history.mode, config.history.retentionDays);
-  await app.register(fastifyStatic, { root: join(process.cwd(), 'src/ui'), prefix: '/ui/' });
+  await registerStaticServing(app);
   await registerHealthRoutes(app, config);
   await registerRequestRoutes(app, orchestrator, endpoint, history);
   await registerRequestHistoryRoutes(app, history);
   await registerConfigRoutes(app, config);
   registerEventServer(app);
-  app.get('/', async (_request, reply) => reply.sendFile('index.html'));
   return { app, config };
 }
 
