@@ -1,0 +1,35 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3100
+  },
+  "homeAssistant": {
+    "baseUrl": "http://homeassistant.local:8123",
+    "tokenEnv": "HUMPHREY_HOME_ASSISTANT_TOKEN"
+  },
+  "ollama": {
+    "baseUrl": "http://127.0.0.1:11434",
+    "model": "llama3.2"
+  },
+  "audio": {
+    "inputDevice": "default",
+    "outputDevice": "default",
+    "fallbackOutput": null,
+    "whisperExecutable": "whisper-cli",
+    "whisperModel": "./models/ggml-base.en.bin",
+    "piperExecutable": "piper",
+    "piperModel": "./models/en_US-lessac-medium.onnx"
+  },
+  "history": {
+    "mode": "full_transcript",
+    "retentionDays": 30
+  },
+  "integrations": {
+    "spotify": { "enabled": false },
+    "ring": { "enabled": false },
+    "tado": { "enabled": false },
+    "weather": { "enabled": false },
+    "web": { "enabled": false }
+  },
+  "devices": []
+}
