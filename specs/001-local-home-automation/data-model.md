@@ -89,5 +89,9 @@ Represents the local microphone and speaker route for one voice terminal.
 | displayAvailable | boolean                        | Controls optional UI feedback only; never gates voice operation |
 | fallbackOutput   | local device reference or null | Used only when the primary output is unavailable                |
 
-The audio endpoint is selected before request processing and remains associated with
-the request through completion, error, and confirmation states.
+Audio endpoints MUST be explicitly configured as named input/output pairs using local
+Linux audio device identifiers, such as ALSA capture and playback names. Discovery may
+enumerate available local devices, but MUST NOT infer a microphone-to-speaker pairing
+when multiple choices exist. The owner selects the pair, and an optional fallback
+output is configured separately. The selected endpoint remains associated with the
+request through completion, error, and confirmation states.

@@ -26,8 +26,8 @@ integrations remain disabled until explicitly enabled by the owner.
 **Language/Version**: TypeScript on Node.js 22 LTS or newer supported LTS
 
 **Primary Dependencies**: Fastify, `ws`, Zod, Pino, Ollama HTTP API, Home Assistant
-REST/WebSocket APIs, locally built `whisper.cpp`, and a local text-to-speech adapter
-such as Piper
+REST/WebSocket APIs, locally built `whisper.cpp`, and Piper for local text-to-speech
+with locally stored voice model files
 
 **Storage**: Local JSON configuration and ephemeral in-memory request state; no
 cloud or remote persistence. Local logs use rotation and redaction.
@@ -129,9 +129,4 @@ avoid a second deployment surface.
 
 ## Complexity Tracking
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
-
-| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
-| -------------------------- | ------------------ | ------------------------------------ |
-| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
+No constitution violations were identified; complexity tracking is not applicable.

@@ -105,7 +105,7 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 - **FR-007**: System MUST use a locally running language model to interpret requests and produce natural-language responses without sending prompts, transcripts, or device state to a cloud model.
 - **FR-008**: System MUST require the spoken word "please" at the end of an actionable request before changing device state, starting playback, or performing another side effect.
 - **FR-009**: System MUST prompt for the missing confirmation word with a phrase such as "What's the magic word?" and MUST not act until the request is repeated or clearly completed with "please".
-- **FR-010**: System MUST display distinct idle, activated, listening, processing, confirmation-required, success, and error states.
+- **FR-010**: System MUST maintain distinct idle, activated, listening, processing, confirmation-required, success, and error states, and MUST display them when a compatible display is available.
 - **FR-011**: System MUST provide optional visual status through a dark-themed local interface with an animated orange listening border, but a display MUST NOT be required for voice interaction.
 - **FR-012**: System MUST allow the owner to configure endpoints, enabled integrations, locations, media sources, and optional credentials through local configuration.
 - **FR-013**: System MUST never expose credentials in the interface, logs, speech responses, error messages, source control, or generated documentation.

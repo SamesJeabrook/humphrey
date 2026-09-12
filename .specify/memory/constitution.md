@@ -93,4 +93,4 @@ clarifications or non-semantic wording changes. Every implementation review MUST
 check compliance with this document, and unresolved violations MUST block release
 until they are corrected or explicitly accepted by the project owner.
 
-**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm initial adoption date | **Last Amended**: 2026-09-12
+**Version**: 1.2.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm initial adoption date | **Last Amended**: 2026-09-12

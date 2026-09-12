@@ -59,6 +59,29 @@ for secrets is sufficient. Raw audio and transcripts are discarded after process
 **Alternatives considered**: SQLite is deferred until a concrete local history or device
 metadata requirement exists.
 
+## Decision: Use Piper for local text-to-speech
+
+**Rationale**: Piper provides local text-to-speech inference with voice model files that
+can remain on the Linux Mint machine. The service can render a response to local PCM or
+WAV output and route it through the request's explicitly selected audio endpoint. This
+keeps spoken responses independent of a browser or cloud speech service.
+
+**Alternatives considered**: Cloud text-to-speech services are prohibited. A generic
+operating-system speech command was not selected because its voice, availability, and
+output behavior vary across Linux Mint installations.
+
+## Decision: Pair audio devices through explicit local configuration
+
+**Rationale**: Linux systems may expose multiple microphones and playback devices. The
+owner will configure named input/output pairs using local ALSA device identifiers. The
+service may enumerate devices for setup assistance, but it will not guess a pairing.
+When the selected output disappears, a separately configured fallback output may be
+used; otherwise the request fails safely and is recorded locally.
+
+**Alternatives considered**: Matching devices by enumeration order, USB proximity, or
+the default system device was rejected because those heuristics can route private
+responses to the wrong room or terminal.
+
 ## Decision: Treat optional external integrations as explicit opt-in adapters
 
 **Rationale**: Spotify, Ring, Tado, weather, and web search may require external access.

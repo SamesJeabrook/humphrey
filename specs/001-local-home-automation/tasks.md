@@ -46,7 +46,7 @@ description: "Task list for local home automation service"
 - [ ] T012 [P] Implement intent schema validation, alias resolution, action allowlisting, and fail-closed policy checks in `src/domain/intent-policy.ts`.
 - [ ] T013 [P] Implement local process lifecycle management for `whisper.cpp` and text-to-speech adapters in `src/audio/process-manager.ts`.
 - [ ] T014 Implement microphone capture, endpoint association, temporary audio handling, and cleanup in `src/audio/microphone.ts`.
-- [ ] T015 Implement terminal audio routing with primary and fallback output devices in `src/audio/audio-router.ts`.
+- [ ] T015 Implement explicit ALSA input/output endpoint discovery, configured pairing, primary routing, and fallback output handling in `src/audio/audio-router.ts`.
 - [ ] T016 [P] Add foundational unit tests for configuration, network policy, redaction, state transitions, intent rejection, and audio endpoint selection in `tests/unit/foundation.test.ts`.
 - [ ] T017 [P] Add local mock fixtures for Home Assistant, Ollama, whisper.cpp, and text-to-speech in `tests/integration/fixtures/`.
 
@@ -72,7 +72,7 @@ description: "Task list for local home automation service"
 - [ ] T022 [P] [US1] Implement the local Ollama structured-chat adapter for validated intent interpretation in `src/adapters/ollama.ts`.
 - [ ] T023 [P] [US1] Implement the local `whisper.cpp` wake-word and request transcription adapter for "Hey Humphrey" and "Yo Humphrey" in `src/adapters/whisper.ts`.
 - [ ] T024 [US1] Implement the voice request orchestration pipeline from activation through confirmation, policy validation, Home Assistant execution, and outcome speech in `src/domain/request-orchestrator.ts`.
-- [ ] T025 [US1] Implement the local text-to-speech adapter and response playback through the request's `AudioEndpoint` in `src/adapters/text-to-speech.ts`.
+- [ ] T025 [US1] Implement the local Piper text-to-speech adapter with locally stored voice model files and response playback through the request's `AudioEndpoint` in `src/adapters/text-to-speech.ts`.
 - [ ] T026 [US1] Implement local request submission and redacted request-status endpoints in `src/api/request-routes.ts`.
 - [ ] T027 [US1] Wire application lifecycle, adapters, orchestrator, and graceful shutdown in `src/app.ts`.
 
