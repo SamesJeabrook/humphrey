@@ -80,6 +80,58 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 2. **Given** a requested location or information source is unavailable, **When** the user asks for weather or an answer, **Then** Humphrey explains the limitation and does not invent a result.
 3. **Given** the user requests a recipe or general answer, **When** the request requires information not stored locally, **Then** Humphrey follows the approved network policy before retrieving or declining the information.
 
+---
+
+### User Story 5 - Personalize Responses by Recognized Speaker (Priority: P2)
+
+As a household member, I want Humphrey to recognize my voice locally and associate it
+with my chosen name so that responses can address me personally without using voice
+recognition as authentication.
+
+**Why this priority**: Personalization improves the household experience, but safe
+device control and voice-only operation must work without speaker recognition.
+
+**Independent Test**: Enroll two local speaker profiles, issue requests from each
+person, and verify that recognized names are used in responses while unknown or
+low-confidence voices receive neutral responses and no identity is asserted.
+
+**Acceptance Scenarios**:
+
+1. **Given** a person has enrolled a local voice profile, **When** they make a request,
+   **Then** Humphrey may address them by their chosen name in the spoken response.
+2. **Given** a voice does not match an enrolled profile with sufficient confidence,
+   **When** the person makes a request, **Then** Humphrey treats the speaker as unknown
+   and uses a neutral response without guessing a name.
+3. **Given** speaker recognition identifies a person, **When** that person requests a
+   device action, **Then** the identity is used only for personalization and MUST NOT
+   bypass the required intent validation or final "please" confirmation.
+
+---
+
+### User Story 6 - Review Recent Request History (Priority: P2)
+
+As the system owner, I want to review what users recently asked Humphrey so that I can
+understand household usage and troubleshoot requests, while ensuring the history is
+automatically deleted after one month.
+
+**Why this priority**: A bounded local history improves transparency and troubleshooting
+without creating indefinite records of household conversations.
+
+**Independent Test**: Create request records with different outcomes, review them
+locally, advance their retention age beyond 30 days, and verify automatic and manual
+deletion without retaining raw audio or secrets.
+
+**Acceptance Scenarios**:
+
+1. **Given** a request has completed or failed, **When** the owner opens local request
+   history, **Then** the redacted request summary, timestamp, recognized name if any,
+   outcome, and target capability are reviewable locally.
+2. **Given** a request record is older than 30 days, **When** the retention process runs,
+   **Then** the record and its stored request text are permanently deleted locally.
+3. **Given** the owner requests deletion of request history, **When** the deletion is
+   confirmed, **Then** all request-history records are deleted without affecting system
+   configuration or other users' speaker profiles.
+
 ### Edge Cases
 
 - If the activation phrase is heard while Humphrey is already processing a request, Humphrey MUST finish or safely cancel the current state before accepting another request.
@@ -91,6 +143,9 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 - If network policy prevents a weather or web lookup, Humphrey MUST provide a local explanation rather than silently contacting an unapproved service.
 - Microphone input MUST not be retained beyond the configured local processing and retention policy.
 - If the requesting terminal's audio output is unavailable, Humphrey MUST report the failure through any configured fallback audio endpoint and local diagnostics without treating a screen as a required fallback.
+- If speaker recognition is unavailable, disabled, ambiguous, or below its confidence threshold, Humphrey MUST continue with a neutral response and MUST NOT claim to know who is speaking.
+- If a person requests deletion of their voice profile, the profile and its local voice embedding MUST be removed without affecting other profiles.
+- If request history storage is unavailable or reaches its configured limit, Humphrey MUST continue operating and MUST report the history failure locally without storing records outside the approved retention boundary.
 
 ## Requirements _(mandatory)_
 
@@ -116,6 +171,16 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 - **FR-018**: System MUST provide documentation that accurately describes installation, configuration, connectivity, security, operation, recovery, and enabled integrations.
 - **FR-019**: System MUST route every spoken response, including confirmations, clarification prompts, errors, and unavailable-service messages, through the same local audio terminal associated with the microphone that captured the request.
 - **FR-020**: System MUST support voice-only operation with no display attached and MUST treat visual status as supplemental feedback rather than the primary response channel.
+- **FR-021**: System MUST optionally support local speaker recognition that associates an enrolled voice profile with a person-chosen name for response personalization.
+- **FR-022**: System MUST keep speaker samples, voice embeddings, profile names, and recognition results on the local machine and MUST NOT send them to cloud services.
+- **FR-023**: System MUST use a confidence threshold and an `unknown` result for uncertain speaker matches, and MUST NOT guess a person's identity.
+- **FR-024**: Speaker recognition MUST NOT authenticate users, authorize actions, bypass the final "please" confirmation, or replace any future security control.
+- **FR-025**: System MUST allow an enrolled person to create, rename, disable, and delete their local speaker profile without exposing other profile data.
+- **FR-026**: System MUST maintain a local, reviewable history of user requests containing only the configured redacted request record fields, such as timestamp, request text or normalized intent, recognized person name if available, outcome, and target capability.
+- **FR-027**: System MUST NOT store raw microphone audio, secrets, Ollama prompts, full model output, or private integration credentials in request history.
+- **FR-028**: System MUST automatically and permanently delete request-history records older than 30 days.
+- **FR-029**: System MUST allow the owner to review and manually delete local request history without deleting configuration, speaker profiles, or unrelated diagnostics.
+- **FR-030**: Request-history retention and deletion MUST operate entirely on the local machine and MUST NOT upload or replicate request records to cloud services.
 
 ### Key Entities _(include if feature involves data)_
 
@@ -139,6 +204,11 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 - **SC-007**: A new system owner can follow the setup documentation to configure a local Home Assistant connection and complete a first safe device-control request within 30 minutes on a supported Linux Mint installation.
 - **SC-008**: For approved information requests, at least 90% of responses clearly indicate whether the answer came from local knowledge, an approved service, or could not be retrieved.
 - **SC-009**: In voice-only acceptance testing with no display attached, 100% of completed, rejected, confirmation-required, and failure responses are audible through the requesting terminal's associated local audio output.
+- **SC-010**: In local speaker-recognition acceptance testing, at least 95% of enrolled-speaker samples above the configured confidence threshold receive the correct person name, while 100% of below-threshold samples produce a neutral unknown-speaker response.
+- **SC-011**: 100% of tested recognized-speaker requests still require normal intent validation and final "please" confirmation before side effects.
+- **SC-012**: 100% of request-history records older than 30 days are absent after the retention job completes.
+- **SC-013**: 100% of reviewed request-history records contain no raw audio, credentials, secrets, or unredacted model prompts.
+- **SC-014**: The owner can review and manually delete all locally stored request-history records without changing device configuration or speaker profiles.
 
 ## Assumptions
 
@@ -151,3 +221,4 @@ As a resident, I want to ask Humphrey for music, weather, recipes, and everyday 
 - Weather, web search, Spotify, Ring, and Tado access is disabled unless the project owner explicitly enables that integration and approves its destination, data boundary, and retention behavior.
 - The required confirmation word applies to all requests that cause a side effect; read-only status and information responses may be processed without it unless they trigger an external lookup or other approved side effect.
 - The first release will prioritize safe device control, activation, confirmation, and local responses before optional media, camera, weather, and web-search capabilities.
+- Speaker recognition is an optional personalization feature; it is disabled until profiles are explicitly enrolled and does not provide authentication or authorization.

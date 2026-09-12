@@ -82,6 +82,29 @@ used; otherwise the request fails safely and is recorded locally.
 the default system device was rejected because those heuristics can route private
 responses to the wrong room or terminal.
 
+## Decision: Add local speaker recognition only for personalization
+
+**Rationale**: A local speaker-embedding model can compare an enrolled voice with a
+request and return a person name plus confidence score. Humphrey will use that result
+to personalize spoken responses, while low-confidence results remain anonymous. Voice
+profiles, embeddings, and recognition results stay local.
+
+**Alternatives considered**: Cloud voice identification is prohibited. Using speaker
+recognition as authentication or authorization is rejected because voice biometrics can
+be spoofed and must not bypass the existing confirmation and safety pipeline.
+
+## Decision: Retain redacted request history locally for 30 days
+
+**Rationale**: A 30-day rolling window is long enough for household troubleshooting and
+usage review while bounding privacy exposure and local storage. The history will contain
+redacted request text or normalized intent, timestamp, outcome, target capability, and
+recognized name when available. Raw audio, prompts, secrets, and model output are
+excluded, and a purge job plus manual deletion will enforce retention.
+
+**Alternatives considered**: Indefinite retention was rejected because it creates
+unbounded sensitive household history. Storing only counters was rejected because it
+would not support reviewing what was requested.
+
 ## Decision: Treat optional external integrations as explicit opt-in adapters
 
 **Rationale**: Spotify, Ring, Tado, weather, and web search may require external access.

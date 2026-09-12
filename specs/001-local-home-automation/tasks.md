@@ -20,6 +20,8 @@ description: "Task list for local home automation service"
 - User Story 2 depends on the request state model from User Story 1 but can proceed in parallel with the User Story 1 adapter implementation after Phase 2.
 - User Story 3 depends on the configuration and adapter boundaries from Phase 2 and should complete before enabling optional integrations in User Story 4.
 - User Story 4 depends on the validated intent router and integration policy from User Stories 1 and 3.
+- User Story 5 depends on the local audio/session foundation from User Story 2 but remains optional and must not block the MVP.
+- User Story 6 depends on the request orchestration and configuration foundations but remains optional and must not block the MVP.
 
 ## Phase 1: Setup (Shared Infrastructure)
 
@@ -156,15 +158,60 @@ description: "Task list for local home automation service"
 
 ---
 
-## Phase 7: Polish and Cross-Cutting Concerns
+## Phase 7: User Story 5 - Personalize Responses by Recognized Speaker (Priority: P2)
+
+**Goal**: Enroll local speaker profiles and use recognized person names in responses without using speaker recognition for authentication or authorization.
+
+**Independent Test**: Enroll two mocked speaker profiles, submit recognized, unknown, and low-confidence samples, and verify correct names or neutral responses while device confirmation rules remain unchanged.
+
+### Tests for User Story 5
+
+- [ ] T056 [P] [US5] Add speaker-recognition tests for enrollment, matching, confidence thresholds, unknown speakers, profile deletion, and neutral responses in `tests/unit/speaker-recognition.test.ts`.
+- [ ] T057 [P] [US5] Add personalization integration tests proving recognized names do not bypass intent validation or final confirmation in `tests/integration/speaker-personalization.test.ts`.
+
+### Implementation for User Story 5
+
+- [ ] T058 [P] [US5] Implement local person and speaker-profile storage with protected embeddings and deletion handling in `src/domain/speaker-profiles.ts`.
+- [ ] T059 [P] [US5] Implement the local speaker-embedding adapter with confidence-threshold matching in `src/adapters/speaker-recognition.ts`.
+- [ ] T060 [US5] Add speaker-profile enrollment, rename, disable, and delete operations to `src/api/speaker-profile-routes.ts`.
+- [ ] T061 [US5] Add recognized-person context to response personalization while preserving neutral unknown-speaker responses in `src/domain/personalization.ts`.
+- [ ] T062 [US5] Integrate speaker recognition into the voice session without changing authorization, confirmation, or side-effect policy in `src/audio/voice-session.ts` and `src/domain/request-orchestrator.ts`.
+
+**Checkpoint**: Recognized household members receive personalized responses, while unknown speakers remain anonymous and all safety rules remain mandatory.
+
+---
+
+## Phase 8: User Story 6 - Review Recent Request History (Priority: P2)
+
+**Goal**: Retain redacted user request history locally for 30 days, make it reviewable by the owner, and delete it automatically or on request.
+
+**Independent Test**: Create successful, rejected, unavailable, and failed request records, review their redacted fields, run the purge at the retention cutoff, and verify that no raw audio, secrets, prompts, or expired records remain.
+
+### Tests for User Story 6
+
+- [ ] T063 [P] [US6] Add request-history tests for redaction, record creation, outcomes, 30-day expiry, and manual deletion in `tests/unit/request-history.test.ts`.
+- [ ] T064 [P] [US6] Add request-history API contract tests for local review, deletion confirmation, and secret exclusion in `tests/contract/request-history-contract.test.ts`.
+- [ ] T065 [P] [US6] Add retention integration tests proving expired records are purged without affecting configuration or speaker profiles in `tests/integration/request-history-retention.test.ts`.
+
+### Implementation for User Story 6
+
+- [ ] T066 [P] [US6] Implement redacted RequestHistoryRecord storage with local-only retention metadata in `src/domain/request-history.ts`.
+- [ ] T067 [US6] Implement the scheduled 30-day purge and owner-triggered delete-all operation in `src/services/request-history-retention.ts`.
+- [ ] T068 [US6] Implement local request-history review and confirmed deletion routes in `src/api/request-history-routes.ts`.
+
+**Checkpoint**: The owner can review the last 30 days of redacted requests, and expired or manually deleted records are gone without affecting operation or profiles.
+
+---
+
+## Phase 9: Polish and Cross-Cutting Concerns
 
 **Purpose**: Complete release-quality validation, documentation, and operational hardening.
 
-- [ ] T056 [P] Add full quickstart acceptance automation for safe action, voice-only mode, missing confirmation, dependency failure, and privacy checks in `tests/integration/quickstart-validation.test.ts`.
-- [ ] T057 [P] Add graceful shutdown, child-process cleanup, temporary-audio cleanup, and log-rotation checks in `tests/unit/lifecycle-cleanup.test.ts`.
-- [ ] T058 [P] Add local performance checks for listening-state latency and the 5-second successful-response target in `tests/integration/performance.test.ts`.
-- [ ] T059 Review all source files for focused unit-test coverage and the approximately 300-line maintainability guideline, then update `docs/setup.md` for any documented exceptions or implementation deviations.
-- [ ] T060 Run the complete build, lint, unit, contract, and opt-in integration checks using scripts in `package.json` and record results in `docs/setup.md`.
+- [ ] T069 [P] Add full quickstart acceptance automation for safe action, voice-only mode, missing confirmation, dependency failure, and privacy checks in `tests/integration/quickstart-validation.test.ts`.
+- [ ] T070 [P] Add graceful shutdown, child-process cleanup, temporary-audio cleanup, and log-rotation checks in `tests/unit/lifecycle-cleanup.test.ts`.
+- [ ] T071 [P] Add local performance checks for listening-state latency and the 5-second successful-response target in `tests/integration/performance.test.ts`.
+- [ ] T072 Review all source files for focused unit-test coverage and the approximately 300-line maintainability guideline, then update `docs/setup.md` for any documented exceptions or implementation deviations.
+- [ ] T073 Run the complete build, lint, unit, contract, and opt-in integration checks using scripts in `package.json` and record results in `docs/setup.md`.
 
 ## Parallel Execution Examples
 
@@ -174,6 +221,8 @@ description: "Task list for local home automation service"
 - T028-T030 can run in parallel with T031-T035 once the foundation is stable.
 - T037-T039 can run in parallel with T040-T043.
 - T046-T048 can run in parallel with T049-T053.
+- T056-T062 can run in parallel with optional integration work after the voice-session foundation is stable.
+- T063-T068 can run in parallel with speaker-personalization work after request orchestration is stable.
 
 ### MVP parallelization
 
@@ -190,4 +239,6 @@ description: "Task list for local home automation service"
 3. Add display-independent state handling and optional browser feedback through User Story 2.
 4. Add secure owner configuration and integration lifecycle management through User Story 3.
 5. Add optional local media and explicitly approved external services through User Story 4.
-6. Finish with privacy, performance, cleanup, documentation, and full acceptance validation.
+6. Add optional local speaker personalization through User Story 5 without using it for security.
+7. Add the bounded local request history through User Story 6.
+8. Finish with privacy, performance, cleanup, documentation, and full acceptance validation.

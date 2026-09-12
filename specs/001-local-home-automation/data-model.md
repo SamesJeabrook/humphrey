@@ -57,6 +57,52 @@ A local or explicitly approved external capability.
 | capabilities  | string[]                                                                        | Explicit operations exposed to the intent router    |
 | health        | healthy, degraded, unavailable, unknown                                         | Updated by health checks                            |
 
+## Person
+
+Represents a household member who has chosen to enroll for response personalization.
+
+| Field            | Type           | Rules                                                    |
+| ---------------- | -------------- | -------------------------------------------------------- |
+| id               | opaque string  | Unique local identifier                                  |
+| displayName      | string         | Person-chosen name used in spoken responses              |
+| speakerProfileId | string or null | References the local speaker profile; never a credential |
+| enabled          | boolean        | Disabled profiles cannot produce personalized names      |
+
+## SpeakerProfile
+
+Represents local voice-recognition data for one person.
+
+| Field               | Type                                 | Rules                                              |
+| ------------------- | ------------------------------------ | -------------------------------------------------- |
+| id                  | opaque string                        | Unique local profile identifier                    |
+| personId            | string                               | References exactly one Person                      |
+| embedding           | local protected data                 | Stored only on the local machine and never logged  |
+| enrollmentVersion   | string                               | Identifies the local recognition model/version     |
+| confidenceThreshold | number                               | Bounded configured threshold for accepting a match |
+| status              | enrolling, active, disabled, deleted | Deleted profiles remove associated embeddings      |
+
+Speaker recognition returns `recognized(personId, confidence)` or `unknown`. It is a
+personalization signal only and MUST NOT be treated as authentication or authorization.
+
+## RequestHistoryRecord
+
+Represents a redacted, locally retained record of one user request.
+
+| Field            | Type                                   | Rules                                                         |
+| ---------------- | -------------------------------------- | ------------------------------------------------------------- |
+| id               | opaque string                          | Unique record identifier                                      |
+| createdAt        | timestamp                              | Used for the 30-day retention cutoff                          |
+| requestText      | redacted string or null                | Stores only approved redacted text; raw audio is never stored |
+| normalizedIntent | string or null                         | Optional review-friendly intent summary                       |
+| personName       | string or null                         | Recognized name only when confidence threshold is met         |
+| targetCapability | string or null                         | Redacted capability or entity alias, not private credentials  |
+| outcome          | success, rejected, unavailable, failed | Final request result                                          |
+| expiresAt        | timestamp                              | Must be `createdAt + 30 days` or earlier                      |
+
+Request history is separate from operational diagnostics. Purging a record removes its
+request text and metadata; it does not delete configuration, speaker profiles, or
+unrelated health logs.
+
 ## NetworkPolicy
 
 The allowlist governing every network call.

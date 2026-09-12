@@ -26,11 +26,12 @@ integrations remain disabled until explicitly enabled by the owner.
 **Language/Version**: TypeScript on Node.js 22 LTS or newer supported LTS
 
 **Primary Dependencies**: Fastify, `ws`, Zod, Pino, Ollama HTTP API, Home Assistant
-REST/WebSocket APIs, locally built `whisper.cpp`, and Piper for local text-to-speech
-with locally stored voice model files
+REST/WebSocket APIs, locally built `whisper.cpp`, a local speaker-embedding adapter,
+and Piper for local text-to-speech with locally stored voice model files
 
-**Storage**: Local JSON configuration and ephemeral in-memory request state; no
-cloud or remote persistence. Local logs use rotation and redaction.
+**Storage**: Local JSON configuration, ephemeral in-memory request state, and a
+redacted local request-history store with a maximum 30-day retention period; no cloud
+or remote persistence. Operational logs use rotation and redaction.
 
 **Testing**: Node.js test runner for unit tests, contract tests for local interfaces,
 and opt-in integration tests against Home Assistant, Ollama, and `whisper.cpp`
@@ -104,7 +105,7 @@ src/
 ├── app.ts                 # service composition and lifecycle
 ├── config/                # validated local configuration
 ├── domain/                # request state, intents, safety policy
-├── adapters/              # Home Assistant, Ollama, whisper.cpp, media, web
+├── adapters/              # Home Assistant, Ollama, whisper.cpp, speaker, media, web
 ├── audio/                 # microphone capture, terminal routing, and local speech output
 ├── api/                   # local HTTP and WebSocket routes
 ├── ui/                    # browser assets and state rendering
