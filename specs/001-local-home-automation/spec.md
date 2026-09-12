@@ -1,4 +1,4 @@
-# Feature Specification: Local Home Automation Service
+g# Feature Specification: Local Home Automation Service
 
 **Feature Branch**: `001-local-home-automation`
 

@@ -1,0 +1,1 @@
+.shell{width:min(760px,calc(100% - 2rem));margin:0 auto;padding:3rem 0}.shell header{display:flex;align-items:start;justify-content:space-between;margin-bottom:2rem}h1{margin:0;font-size:clamp(3rem,10vw,6rem);color:var(--orange)}.eyebrow{margin:0 0 .5rem;color:var(--muted);font-size:.75rem;letter-spacing:.15em}
