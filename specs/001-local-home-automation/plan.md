@@ -29,9 +29,11 @@ integrations remain disabled until explicitly enabled by the owner.
 REST/WebSocket APIs, locally built `whisper.cpp`, a local speaker-embedding adapter,
 and Piper for local text-to-speech with locally stored voice model files
 
-**Storage**: Local JSON configuration, ephemeral in-memory request state, and a
-redacted local request-history store with a maximum 30-day retention period; no cloud
-or remote persistence. Operational logs use rotation and redaction.
+**Storage**: Local JSON configuration, ephemeral in-memory request state, and a local
+request-history store with configurable `normalized_only`, `redacted_transcript`, and
+`full_transcript` modes. The default is `full_transcript`; all history is permanently
+deleted after 30 days. No cloud or remote persistence. Operational logs use rotation
+and redaction.
 
 **Testing**: Node.js test runner for unit tests, contract tests for local interfaces,
 and opt-in integration tests against Home Assistant, Ollama, and `whisper.cpp`
@@ -67,7 +69,8 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
   services may be called, and the request pipeline requires validated intent plus
   the final confirmation word before side effects.
 - PASS: Secret and data safety. Credentials are local configuration inputs, never
-  committed or logged; raw audio and transcripts are ephemeral by default.
+  committed or logged; raw audio is ephemeral, operational logs are redacted, and
+  request history follows the constitutional mode and 30-day retention policy.
 - PASS: Safe, testable automation. Focused unit tests cover changed logic, while
   contract and opt-in integration tests cover intent validation, confirmation, adapter
   failures, and state transitions.

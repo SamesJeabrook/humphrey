@@ -183,19 +183,19 @@ description: "Task list for local home automation service"
 
 ## Phase 8: User Story 6 - Review Recent Request History (Priority: P2)
 
-**Goal**: Retain redacted user request history locally for 30 days, make it reviewable by the owner, and delete it automatically or on request.
+**Goal**: Retain user request history locally in the configured mode for 30 days, make it reviewable by the owner, and delete it automatically or on request.
 
-**Independent Test**: Create successful, rejected, unavailable, and failed request records, review their redacted fields, run the purge at the retention cutoff, and verify that no raw audio, secrets, prompts, or expired records remain.
+**Independent Test**: Create successful, rejected, unavailable, and failed request records in each history mode, review the permitted fields, run the purge at the retention cutoff, and verify that no raw audio, credentials, prompts, or expired records remain.
 
 ### Tests for User Story 6
 
-- [ ] T063 [P] [US6] Add request-history tests for redaction, record creation, outcomes, 30-day expiry, and manual deletion in `tests/unit/request-history.test.ts`.
+- [ ] T063 [P] [US6] Add request-history tests for all three modes, record creation, outcomes, 30-day expiry, credential exclusion, and manual deletion in `tests/unit/request-history.test.ts`.
 - [ ] T064 [P] [US6] Add request-history API contract tests for local review, deletion confirmation, and secret exclusion in `tests/contract/request-history-contract.test.ts`.
 - [ ] T065 [P] [US6] Add retention integration tests proving expired records are purged without affecting configuration or speaker profiles in `tests/integration/request-history-retention.test.ts`.
 
 ### Implementation for User Story 6
 
-- [ ] T066 [P] [US6] Implement redacted RequestHistoryRecord storage with local-only retention metadata in `src/domain/request-history.ts`.
+- [ ] T066 [P] [US6] Implement configurable RequestHistoryRecord storage for all three modes with local-only retention metadata in `src/domain/request-history.ts`.
 - [ ] T067 [US6] Implement the scheduled 30-day purge and owner-triggered delete-all operation in `src/services/request-history-retention.ts`.
 - [ ] T068 [US6] Implement local request-history review and confirmed deletion routes in `src/api/request-history-routes.ts`.
 

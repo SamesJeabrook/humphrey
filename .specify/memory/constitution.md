@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.0 -> 1.2.0
-- Modified principles: IV. Safe, Testable Automation; V. Simple, Observable Node.js Services; Development Workflow and Quality Gates
-- Added sections: none
+- Version change: 1.2.0 -> 2.0.0
+- Modified principles: III. Secret and Data Safety; Development Workflow and Quality Gates
+- Added sections: Request History Retention
 - Removed sections: none
 - Follow-up TODOs: Confirm the historical ratification date before the first release.
 -->
@@ -34,8 +34,9 @@ Secrets, access tokens, credentials, and private configuration MUST be supplied
 through environment variables or local secret storage and MUST NOT be committed,
 logged, displayed in error messages, sent to Ollama, or included in generated
 artifacts. Persistent data MUST remain on the local system, and collection MUST be
-limited to what is required for the requested automation. Logs MUST redact secrets
-and sensitive speech or device data by default.
+limited to what is required for the requested automation. Operational logs MUST
+redact secrets and sensitive speech or device data by default. Request-history
+transcripts are governed separately by the Request History Retention section.
 
 ### IV. Safe, Testable Automation
 
@@ -68,6 +69,24 @@ devices. The project MUST avoid cloud SDKs, remote telemetry, hosted model APIs,
 external speech-processing services. Dependencies MUST be reviewed for network,
 filesystem, and credential-handling behavior before adoption.
 
+## Request History Retention
+
+The system MUST provide a local request-history setting with exactly three modes:
+
+- `normalized_only`: retain only a normalized intent summary and outcome.
+- `redacted_transcript`: retain a transcript with sensitive values removed, plus the
+  normalized intent summary and outcome.
+- `full_transcript`: retain the original recognized transcript text, plus the
+  normalized intent summary and outcome.
+
+The default mode MUST be `full_transcript`. Request history MUST remain on the local
+machine, MUST NOT include raw microphone audio, access tokens, passwords, private keys,
+or other credentials, and MUST be permanently deleted after 30 days. The owner MUST
+be able to change the mode and manually delete all request history. Operational logs
+remain subject to the redaction requirements in Principle III and MUST NOT be used as
+a substitute for request history. The full-transcript default is a deliberate privacy
+tradeoff for reviewability and MUST be documented in setup guidance.
+
 ## Development Workflow and Quality Gates
 
 Changes MUST proceed from a current specification to an implementation plan and
@@ -93,4 +112,4 @@ clarifications or non-semantic wording changes. Every implementation review MUST
 check compliance with this document, and unresolved violations MUST block release
 until they are corrected or explicitly accepted by the project owner.
 
-**Version**: 1.2.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm initial adoption date | **Last Amended**: 2026-09-12
+**Version**: 2.0.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm initial adoption date | **Last Amended**: 2026-09-12

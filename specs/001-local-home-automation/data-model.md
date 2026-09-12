@@ -86,22 +86,24 @@ personalization signal only and MUST NOT be treated as authentication or authori
 
 ## RequestHistoryRecord
 
-Represents a redacted, locally retained record of one user request.
+Represents a locally retained record of one user request, subject to the configured
+history mode and 30-day retention policy.
 
-| Field            | Type                                   | Rules                                                         |
-| ---------------- | -------------------------------------- | ------------------------------------------------------------- |
-| id               | opaque string                          | Unique record identifier                                      |
-| createdAt        | timestamp                              | Used for the 30-day retention cutoff                          |
-| requestText      | redacted string or null                | Stores only approved redacted text; raw audio is never stored |
-| normalizedIntent | string or null                         | Optional review-friendly intent summary                       |
-| personName       | string or null                         | Recognized name only when confidence threshold is met         |
-| targetCapability | string or null                         | Redacted capability or entity alias, not private credentials  |
-| outcome          | success, rejected, unavailable, failed | Final request result                                          |
-| expiresAt        | timestamp                              | Must be `createdAt + 30 days` or earlier                      |
+| Field            | Type                                   | Rules                                                        |
+| ---------------- | -------------------------------------- | ------------------------------------------------------------ |
+| id               | opaque string                          | Unique record identifier                                     |
+| createdAt        | timestamp                              | Used for the 30-day retention cutoff                         |
+| requestText      | string or null                         | Stored according to history mode; raw audio is never stored  |
+| normalizedIntent | string or null                         | Optional review-friendly intent summary                      |
+| personName       | string or null                         | Recognized name only when confidence threshold is met        |
+| targetCapability | string or null                         | Redacted capability or entity alias, not private credentials |
+| outcome          | success, rejected, unavailable, failed | Final request result                                         |
+| expiresAt        | timestamp                              | Must be `createdAt + 30 days` or earlier                     |
 
-Request history is separate from operational diagnostics. Purging a record removes its
+Request history supports `normalized_only`, `redacted_transcript`, and
+`full_transcript`; `full_transcript` is the default. Purging a record removes its
 request text and metadata; it does not delete configuration, speaker profiles, or
-unrelated health logs.
+unrelated health logs. Credentials and raw audio are excluded in every mode.
 
 ## NetworkPolicy
 

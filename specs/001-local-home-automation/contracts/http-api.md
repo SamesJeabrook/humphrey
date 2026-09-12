@@ -45,6 +45,16 @@ Returns `202 Accepted` with a request identifier and current state.
 Returns redacted request state and user-facing outcome. It MUST omit transcript, prompt,
 credentials, raw model output, and internal stack traces.
 
+### `GET /api/request-history`
+
+Returns locally stored request-history records according to the configured history mode.
+The response MUST exclude raw audio, credentials, prompts, and full model output.
+
+### `DELETE /api/request-history`
+
+Deletes all local request-history records after explicit owner confirmation. It MUST
+not delete configuration, speaker profiles, or unrelated operational diagnostics.
+
 ## WebSocket `/api/events`
 
 The server sends state updates to the browser:

@@ -93,13 +93,13 @@ profiles, embeddings, and recognition results stay local.
 recognition as authentication or authorization is rejected because voice biometrics can
 be spoofed and must not bypass the existing confirmation and safety pipeline.
 
-## Decision: Retain redacted request history locally for 30 days
+## Decision: Retain configurable request history locally for 30 days
 
 **Rationale**: A 30-day rolling window is long enough for household troubleshooting and
-usage review while bounding privacy exposure and local storage. The history will contain
-redacted request text or normalized intent, timestamp, outcome, target capability, and
-recognized name when available. Raw audio, prompts, secrets, and model output are
-excluded, and a purge job plus manual deletion will enforce retention.
+usage review while bounding privacy exposure and local storage. The owner can select
+`normalized_only`, `redacted_transcript`, or `full_transcript`, with `full_transcript`
+as the default. Raw audio, credentials, prompts, and full model output are excluded,
+and a purge job plus manual deletion will enforce retention.
 
 **Alternatives considered**: Indefinite retention was rejected because it creates
 unbounded sensitive household history. Storing only counters was rejected because it

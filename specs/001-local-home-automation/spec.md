@@ -14,6 +14,7 @@
 
 - Q: Should Humphrey permit any approved external network access for weather, web search, Spotify, Ring, or Tado? -> A: Local-first with per-integration opt-in; each external integration is disabled by default and enabled individually by the owner.
 - Q: Should Humphrey use a local speech-to-text engine with model files installed on Linux Mint? -> A: Yes; use whisper.cpp and keep its model files on the Linux Mint machine.
+- Q: Which request-history mode should be the default? -> A: C; store the full recognized transcript plus normalized intent and outcome locally, with raw audio and credentials excluded and automatic deletion after 30 days.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -124,8 +125,8 @@ deletion without retaining raw audio or secrets.
 **Acceptance Scenarios**:
 
 1. **Given** a request has completed or failed, **When** the owner opens local request
-   history, **Then** the redacted request summary, timestamp, recognized name if any,
-   outcome, and target capability are reviewable locally.
+   history, **Then** the configured request summary or full transcript, timestamp,
+   recognized name if any, outcome, and target capability are reviewable locally.
 2. **Given** a request record is older than 30 days, **When** the retention process runs,
    **Then** the record and its stored request text are permanently deleted locally.
 3. **Given** the owner requests deletion of request history, **When** the deletion is
@@ -176,8 +177,8 @@ deletion without retaining raw audio or secrets.
 - **FR-023**: System MUST use a confidence threshold and an `unknown` result for uncertain speaker matches, and MUST NOT guess a person's identity.
 - **FR-024**: Speaker recognition MUST NOT authenticate users, authorize actions, bypass the final "please" confirmation, or replace any future security control.
 - **FR-025**: System MUST allow an enrolled person to create, rename, disable, and delete their local speaker profile without exposing other profile data.
-- **FR-026**: System MUST maintain a local, reviewable history of user requests containing only the configured redacted request record fields, such as timestamp, request text or normalized intent, recognized person name if available, outcome, and target capability.
-- **FR-027**: System MUST NOT store raw microphone audio, secrets, Ollama prompts, full model output, or private integration credentials in request history.
+- **FR-026**: System MUST maintain a local, reviewable history of user requests using the configured `normalized_only`, `redacted_transcript`, or `full_transcript` mode, with `full_transcript` as the default, and include timestamp, request text or normalized intent, recognized person name if available, outcome, and target capability.
+- **FR-027**: System MUST NOT store raw microphone audio, secrets, Ollama prompts, full model output, or private integration credentials in request history; transcript text is governed by the configured history mode.
 - **FR-028**: System MUST automatically and permanently delete request-history records older than 30 days.
 - **FR-029**: System MUST allow the owner to review and manually delete local request history without deleting configuration, speaker profiles, or unrelated diagnostics.
 - **FR-030**: Request-history retention and deletion MUST operate entirely on the local machine and MUST NOT upload or replicate request records to cloud services.

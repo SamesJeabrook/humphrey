@@ -26,6 +26,9 @@ It is intentionally a run guide, not a deployment script or implementation tutor
    is returned.
 8. Verify the configured audio output can play a local test phrase without a browser
    or attached display.
+9. Verify request-history mode is configurable as `normalized_only`,
+   `redacted_transcript`, or `full_transcript`, with `full_transcript` selected by
+   default and a 30-day expiry configured.
 
 ## Acceptance scenarios
 
@@ -63,6 +66,8 @@ It is intentionally a run guide, not a deployment script or implementation tutor
    and model prompts; none may be present.
 4. Leave an optional external integration disabled and verify no outbound request is
    made to its destination.
+5. Create a request-history record, review it locally, manually delete all history,
+   and verify configuration and speaker profiles remain intact.
 
 ## Integration test fixtures
 
