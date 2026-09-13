@@ -4,4 +4,4 @@ export interface VisualServiceState { state: ServiceState; message: string; requ
 export interface ConnectionState { service: 'connected' | 'disconnected' | 'unavailable'; events: 'connected' | 'reconnecting' | 'disconnected'; lastSequence: number; }
 export interface HistoryViewRecord { id: string; createdAt: string; requestText: string | null; normalizedIntent: string | null; personName: string | null; targetCapability: string | null; outcome: 'success' | 'rejected' | 'unavailable' | 'failed'; expiresAt: string; }
 export interface PublicConfig { activationPhrases: string[]; historyMode: HistoryMode; retentionDays: number; integrations: string[]; }
-export interface RequestResponse { requestId: string; state: ServiceState; outcome: string | null; message: string; }
+export interface RequestResponse { requestId: string; state: ServiceState; outcome: string | null; message: string; transcript?: string; }

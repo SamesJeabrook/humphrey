@@ -4,6 +4,7 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> { cons
 export const api = {
   config: () => request<PublicConfig>('/api/config/public'),
   submit: (text: string) => request<RequestResponse>('/api/requests', { ...json, method: 'POST', body: JSON.stringify({ text }) }),
+  submitVoice: (audio: Blob) => request<RequestResponse>('/api/voice', { method: 'POST', headers: { 'content-type': 'audio/wav' }, body: audio }),
   history: () => request<{ mode: string; records: HistoryViewRecord[] }>('/api/request-history'),
   deleteHistory: () => request<{ deleted: boolean }>('/api/request-history', { ...json, method: 'DELETE', body: JSON.stringify({ confirm: true }) })
 };

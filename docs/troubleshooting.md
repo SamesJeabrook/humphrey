@@ -16,6 +16,11 @@ voice pipeline until the individual local services work independently.
 
 ## Whisper prints unrelated or inaccurate text
 
+To test the microphone through the dashboard, open `http://127.0.0.1:3100`, click
+**Activate Humphrey**, allow microphone access, speak clearly, and click **Stop and
+process**. The **Whisper heard** panel shows the exact transcript returned by the local
+Whisper command. If it is wrong, compare it with the direct `arecord` test below.
+
 `whisper-stream` continuously transcribes whatever reaches its selected capture device.
 It can hallucinate text from silence, room noise, music, or speaker feedback.
 

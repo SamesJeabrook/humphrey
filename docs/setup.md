@@ -39,10 +39,13 @@ still answer `GET /health` and `GET /api/config/public`, but `/` returns a JSON 
 because `web/dist` does not exist. Never commit local config, tokens, raw audio, or
 model files.
 
-For a microphone-independent test, open the dashboard and click **Activate Humphrey**.
-Enter a command and click **Send**. This exercises the normal backend request path while
-keeping the same confirmation and Home Assistant allowlist rules. It is a text test
-control, not browser speech recognition.
+For a browser microphone test, open the dashboard, click **Activate Humphrey**, and
+allow microphone access. Speak the command, click **Stop and process**, and inspect the
+**Whisper heard** text before checking the response. The WAV is sent to the local
+Humphrey service for `whisper-cli` transcription and removed after processing. This
+exercises the normal backend request path while keeping the same confirmation and Home
+Assistant allowlist rules. You can still type a command and click **Send** for a
+microphone-independent test.
 
 Before connecting the services together, follow the [local services readiness checklist](local-services-readiness.md).
 

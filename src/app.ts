@@ -13,6 +13,7 @@ import { RequestHistoryStore } from './domain/request-history.js';
 import { registerStaticServing } from './api/static-serving.js';
 import { createVoiceSession } from './audio/voice-session.js';
 import { WhisperAdapter } from './adapters/whisper.js';
+import { registerVoiceRoutes } from './api/voice-routes.js';
 
 export async function buildApp() {
   const config = await loadConfig();
@@ -22,12 +23,15 @@ export async function buildApp() {
   const speech = new PiperTextToSpeechAdapter(config.audio.piperExecutable, config.audio.piperModel);
   const orchestrator = new RequestOrchestrator(config.devices, homeAssistant, ollama, speech);
   const endpoint = { id: 'main', inputDevice: config.audio.inputDevice, outputDevice: config.audio.outputDevice, fallbackOutput: config.audio.fallbackOutput ?? undefined, displayAvailable: false };
-  const voiceSession = createVoiceSession(endpoint, new WhisperAdapter(config.audio.whisperExecutable, config.audio.whisperModel), orchestrator, (state, message) => app.log.info({ state, message }, 'voice session state'));
+  const whisper = new WhisperAdapter(config.audio.whisperExecutable, config.audio.whisperModel);
+  const voiceSession = createVoiceSession(endpoint, whisper, orchestrator, (state, message) => app.log.info({ state, message }, 'voice session state'));
   const history = new RequestHistoryStore('data/request-history.json', config.history.mode, config.history.retentionDays);
+  app.addContentTypeParser('audio/wav', { parseAs: 'buffer' }, (_request, body, done) => done(null, body));
   await registerStaticServing(app);
   await registerHealthRoutes(app, config);
   await registerRequestRoutes(app, orchestrator, endpoint, history);
   await registerRequestHistoryRoutes(app, history);
+  await registerVoiceRoutes(app, whisper, orchestrator, endpoint, history);
   await registerConfigRoutes(app, config);
   registerEventServer(app);
   return { app, config, voiceSession };
