@@ -220,7 +220,7 @@ curl \
 Expected result:
 
 ```json
-{"message":"API running."}
+{ "message": "API running." }
 ```
 
 Do not put the token directly into `config/local.config.json` or commit it.
@@ -256,6 +256,31 @@ curl http://127.0.0.1:3100/api/config/public
 ```
 
 The public configuration response must not expose tokens, passwords, or secret values.
+
+## Humphrey returns a JSON 404
+
+A JSON response such as `Route GET:/ not found` means Humphrey is reachable, but the
+requested path is not registered. Use these known endpoints:
+
+```bash
+curl http://127.0.0.1:3100/health
+curl http://127.0.0.1:3100/api/config/public
+curl http://127.0.0.1:3100/api/config/history
+```
+
+There is no Home Assistant-style `/api/` endpoint on Humphrey. The Home Assistant API
+is at port `8123`; Humphrey is normally at port `3100`.
+
+If `/health` works but opening `http://127.0.0.1:3100/` returns JSON 404, build the web
+application before starting Humphrey:
+
+```bash
+npm run build
+npm run dev
+```
+
+The root page is served only when `web/dist/index.html` exists. If you are using the
+production server instead, run `npm run build` before `npm start`.
 
 ## Browser UI does not load
 

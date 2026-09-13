@@ -67,8 +67,37 @@ whisper-cli -m ./models/ggml-base.en.bin -f <audio-file>
 
 ### Piper
 
-Install Piper locally and download a compatible voice model. Store the executable and
-model on the Linux Mint machine. Configure both paths in `config/local.config.json`.
+Install Piper in a dedicated user virtual environment on the Linux Mint machine. Do
+not install it inside the Humphrey repository:
+
+```bash
+sudo apt install -y python3-venv
+python3 -m venv ~/.local/share/humphrey/piper-venv
+~/.local/share/humphrey/piper-venv/bin/pip install --upgrade pip piper-tts
+mkdir -p ~/humphrey-models/piper
+cd ~/humphrey-models/piper
+~/.local/share/humphrey/piper-venv/bin/python -m piper.download_voices en_US-lessac-medium
+```
+
+Verify the executable and generate a test WAV:
+
+```bash
+~/.local/share/humphrey/piper-venv/bin/piper \
+	--model ~/humphrey-models/piper/en_US-lessac-medium.onnx \
+	--output_file /tmp/humphrey-piper-test.wav \
+	<<< "Hello, this is Humphrey."
+aplay /tmp/humphrey-piper-test.wav
+```
+
+Set these absolute paths in `config/local.config.json`:
+
+```json
+"piperExecutable": "/home/YOUR_USERNAME/.local/share/humphrey/piper-venv/bin/piper",
+"piperModel": "/home/YOUR_USERNAME/humphrey-models/piper/en_US-lessac-medium.onnx"
+```
+
+Replace `YOUR_USERNAME` with the Linux username that runs Humphrey. Keep the model
+outside Git because voice models are large binary files.
 
 ## Configure Humphrey
 
@@ -76,6 +105,7 @@ Install the Node dependencies and create local configuration:
 
 ```bash
 npm install
+npm install --prefix web
 cp config/example.config.json config/local.config.json
 ```
 
@@ -130,11 +160,27 @@ Start the local service:
 npm run dev
 ```
 
-The default local interface is:
+The default local dashboard is:
 
 ```text
 http://127.0.0.1:3100
 ```
+
+The dashboard is built from the separate React application in `web/`. `npm run build`
+builds the web app into `web/dist` and then builds the backend. Run it once before
+opening the dashboard. If `web/dist` does not exist, the backend health routes still
+work, but opening `/` returns a JSON 404 because there is no web interface to serve.
+
+For frontend-only development, run the Vite server from the `web/` directory:
+
+```bash
+cd web
+npm run dev
+```
+
+That exposes the development UI at the URL Vite prints, normally
+`http://localhost:5173`. The integrated dashboard at port `3100` is the normal runtime
+path.
 
 Health and configuration checks:
 

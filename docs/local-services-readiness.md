@@ -41,7 +41,7 @@ curl \
 Expected result:
 
 ```json
-{"message":"API running."}
+{ "message": "API running." }
 ```
 
 Find and record one safe entity ID, for example `light.living_room`:
@@ -139,19 +139,30 @@ pipeline.
 
 ## 4. Piper
 
+Install Piper in a dedicated user virtual environment, outside the Humphrey repository:
+
+```bash
+sudo apt install -y python3-venv
+python3 -m venv ~/.local/share/humphrey/piper-venv
+~/.local/share/humphrey/piper-venv/bin/pip install --upgrade pip piper-tts
+mkdir -p ~/humphrey-models/piper
+cd ~/humphrey-models/piper
+~/.local/share/humphrey/piper-venv/bin/python -m piper.download_voices en_US-lessac-medium
+```
+
 Find the Piper executable and local voice model:
 
 ```bash
-which piper
-find ~/ -type f -name '*.onnx' 2>/dev/null | head
+ls -l ~/.local/share/humphrey/piper-venv/bin/piper
+ls -lh ~/humphrey-models/piper/en_US-lessac-medium.onnx
 ```
 
 Generate a test WAV:
 
 ```bash
 echo "Hello, this is Humphrey speaking." | \
-  piper \
-  --model /path/to/voice-model.onnx \
+  ~/.local/share/humphrey/piper-venv/bin/piper \
+  --model ~/humphrey-models/piper/en_US-lessac-medium.onnx \
   --output_file /tmp/humphrey-response.wav
 ```
 
@@ -161,7 +172,9 @@ Play it:
 aplay /tmp/humphrey-response.wav
 ```
 
-If this fails, fix Piper and speaker output before connecting it to the Node service.
+Set `audio.piperExecutable` and `audio.piperModel` in `config/local.config.json` to
+these absolute paths. If this fails, fix Piper and speaker output before connecting it
+to the Node service.
 
 ## 5. Humphrey configuration
 

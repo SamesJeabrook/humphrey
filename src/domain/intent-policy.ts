@@ -9,6 +9,9 @@ export function resolveDevice(devices: DeviceEntity[], target: string): DeviceEn
 
 export function validateIntent(intent: Intent, devices: DeviceEntity[]): Intent {
   if (!intent.responseText || intent.responseText.length > 1000) throw new Error('Intent response is invalid');
+  if (intent.kind === 'weather_query' || intent.kind === 'web_query' || intent.kind === 'media_action') {
+    throw new Error(`Capability is unavailable locally: ${intent.kind}`);
+  }
   if (intent.kind === 'device_action') {
     if (!intent.target || !intent.action) throw new Error('Device intent requires a target and action');
     const device = resolveDevice(devices, intent.target);

@@ -19,6 +19,13 @@ cp .env.example .env
 Humphrey loads `.env` when it starts. Do not paste the token into
 `config/local.config.json` or commit `.env`.
 
+From the repository root, install both the backend and React UI dependencies:
+
+```bash
+npm install
+npm install --prefix web
+```
+
 Copy `config/example.config.json` to `config/local.config.json`, then set local device
 names, ALSA input/output pairs, model paths, and the request-history mode. History modes
 are `normalized_only`, `redacted_transcript`, and `full_transcript`; the default is
@@ -26,9 +33,11 @@ are `normalized_only`, `redacted_transcript`, and `full_transcript`; the default
 
 ## Validation
 
-Run `npm install`, `npm run build`, and `npm test`. Start with `npm run dev`, then check
-`GET /health` and `GET /api/config/public` locally. Never commit local config, tokens,
-raw audio, or model files.
+Run `npm run build`, `npm test`, and `npm run dev`. The build includes the React UI and
+serves it at `http://127.0.0.1:3100`. If the build has not run yet, the backend can
+still answer `GET /health` and `GET /api/config/public`, but `/` returns a JSON 404
+because `web/dist` does not exist. Never commit local config, tokens, raw audio, or
+model files.
 
 Before connecting the services together, follow the [local services readiness checklist](local-services-readiness.md).
 

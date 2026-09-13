@@ -27,12 +27,12 @@ description: 'Task list for local home automation service'
 
 **Purpose**: Initialize the TypeScript Node.js project and repository structure described in `plan.md`.
 
-- [ ] T001 Create the Node.js project manifest and scripts in `./package.json` for development, build, test, lint, and start commands.
-- [ ] T002 [P] Create the TypeScript compiler configuration in `./tsconfig.json` for the Node.js service and browser assets.
-- [ ] T003 [P] Configure linting and formatting in `./eslint.config.js` and `./.prettierrc.json`.
-- [ ] T004 [P] Create the source and test directory structure under `src/`, `tests/unit/`, `tests/contract/`, and `tests/integration/`.
-- [ ] T005 [P] Add the non-secret configuration template in `config/example.config.json` and document ignored local secret files in `.gitignore`.
-- [ ] T006 [P] Add the initial setup and recovery documentation structure in `docs/setup.md`.
+- [X] T001 Create the Node.js project manifest and scripts in `./package.json` for development, build, test, lint, and start commands.
+- [X] T002 [P] Create the TypeScript compiler configuration in `./tsconfig.json` for the Node.js service and browser assets.
+- [X] T003 [P] Configure linting and formatting in `./eslint.config.js` and `./.prettierrc.json`.
+- [X] T004 [P] Create the source and test directory structure under `src/`, `tests/unit/`, `tests/contract/`, and `tests/integration/`.
+- [X] T005 [P] Add the non-secret configuration template in `config/example.config.json` and document ignored local secret files in `.gitignore`.
+- [X] T006 [P] Add the initial setup and recovery documentation structure in `docs/setup.md`.
 
 ---
 
@@ -40,12 +40,12 @@ description: 'Task list for local home automation service'
 
 **Purpose**: Build the shared boundaries that every user story depends on. No user-story implementation should begin until this phase is complete.
 
-- [ ] T007 Implement validated configuration loading, environment-variable secret references, and default-disabled optional integrations in `src/config/config-schema.ts` and `src/config/load-config.ts`.
+- [X] T007 Implement validated configuration loading, environment-variable secret references, and default-disabled optional integrations in `src/config/config-schema.ts` and `src/config/load-config.ts`.
 - [ ] T008 [P] Implement local network destination and permitted-data validation in `src/config/network-policy.ts`.
 - [ ] T009 [P] Implement redacted structured logging in `src/logging/logger.ts` and `src/logging/redaction.ts`.
-- [ ] T010 Implement the VoiceRequest, Intent, Integration, NetworkPolicy, SystemState, and AudioEndpoint domain types in `src/domain/types.ts`.
-- [ ] T011 Implement request state transitions and single-side-effect serialization in `src/domain/request-state.ts`.
-- [ ] T012 [P] Implement intent schema validation, alias resolution, action allowlisting, and fail-closed policy checks in `src/domain/intent-policy.ts`.
+- [X] T010 Implement the VoiceRequest, Intent, Integration, NetworkPolicy, SystemState, and AudioEndpoint domain types in `src/domain/types.ts`.
+- [X] T011 Implement request state transitions and single-side-effect serialization in `src/domain/request-state.ts`.
+- [X] T012 [P] Implement intent schema validation, alias resolution, action allowlisting, and fail-closed policy checks in `src/domain/intent-policy.ts`.
 - [ ] T013 [P] Implement local process lifecycle management for `whisper.cpp` and text-to-speech adapters in `src/audio/process-manager.ts`.
 - [ ] T014 Implement microphone capture, endpoint association, temporary audio handling, and cleanup in `src/audio/microphone.ts`.
 - [ ] T015 Implement explicit ALSA input/output endpoint discovery, configured pairing, primary routing, and fallback output handling in `src/audio/audio-router.ts`.
@@ -71,11 +71,11 @@ description: 'Task list for local home automation service'
 ### Implementation for User Story 1
 
 - [ ] T021 [P] [US1] Implement the Home Assistant REST and WebSocket adapter for health, entity state, service calls, and state updates in `src/adapters/home-assistant.ts`.
-- [ ] T022 [P] [US1] Implement the local Ollama structured-chat adapter for validated intent interpretation in `src/adapters/ollama.ts`.
+- [X] T022 [P] [US1] Implement the local Ollama structured-chat adapter for validated intent interpretation in `src/adapters/ollama.ts`.
 - [ ] T023 [P] [US1] Implement the local `whisper.cpp` wake-word and request transcription adapter for "Hey Humphrey" and "Yo Humphrey" in `src/adapters/whisper.ts`.
-- [ ] T024 [US1] Implement the voice request orchestration pipeline from activation through confirmation, policy validation, Home Assistant execution, and outcome speech in `src/domain/request-orchestrator.ts`.
-- [ ] T025 [US1] Implement the local Piper text-to-speech adapter with locally stored voice model files and response playback through the request's `AudioEndpoint` in `src/adapters/text-to-speech.ts`.
-- [ ] T026 [US1] Implement local request submission and redacted request-status endpoints in `src/api/request-routes.ts`.
+- [X] T024 [US1] Implement the voice request orchestration pipeline from activation through confirmation, policy validation, Home Assistant execution, and outcome speech in `src/domain/request-orchestrator.ts`.
+- [X] T025 [US1] Implement the local Piper text-to-speech adapter with locally stored voice model files and response playback through the request's `AudioEndpoint` in `src/adapters/text-to-speech.ts`.
+- [X] T026 [US1] Implement local request submission and redacted request-status endpoints in `src/api/request-routes.ts`.
 - [ ] T027 [US1] Wire application lifecycle, adapters, orchestrator, and graceful shutdown in `src/app.ts`.
 
 **Checkpoint**: User Story 1 works without a display and produces no device side effect unless the request is validated and ends with "please".
@@ -96,11 +96,11 @@ description: 'Task list for local home automation service'
 
 ### Implementation for User Story 2
 
-- [ ] T031 [US2] Implement microphone activation and request capture integration with endpoint ownership in `src/audio/voice-session.ts`.
+- [X] T031 [US2] Implement microphone activation and request capture integration with endpoint ownership in `src/audio/voice-session.ts`.
 - [ ] T032 [US2] Implement the local audio response catalog for confirmations, "What's the magic word?", errors, and unavailable-service messages in `src/audio/response-phrases.ts`.
 - [ ] T033 [US2] Implement the local WebSocket event server for redacted system-state updates and safe cancellation in `src/api/event-server.ts`.
 - [ ] T034 [US2] Implement the optional dark browser UI with orange animated listening state in `src/ui/index.html`, `src/ui/styles.css`, and `src/ui/app.ts`.
-- [ ] T035 [US2] Implement health and public-configuration endpoints that never require the browser for voice operation in `src/api/health-routes.ts`.
+- [X] T035 [US2] Implement health and public-configuration endpoints that never require the browser for voice operation in `src/api/health-routes.ts`.
 - [ ] T036 [US2] Integrate fallback audio behavior and display-independent failure handling in `src/domain/request-orchestrator.ts` and `src/audio/audio-router.ts`.
 
 **Checkpoint**: The system is usable from a voice-only terminal, while an attached browser receives supplemental status.
@@ -195,9 +195,9 @@ description: 'Task list for local home automation service'
 
 ### Implementation for User Story 6
 
-- [ ] T066 [P] [US6] Implement configurable RequestHistoryRecord storage for all three modes with local-only retention metadata in `src/domain/request-history.ts`.
+- [X] T066 [P] [US6] Implement configurable RequestHistoryRecord storage for all three modes with local-only retention metadata in `src/domain/request-history.ts`.
 - [ ] T067 [US6] Implement the scheduled 30-day purge and owner-triggered delete-all operation in `src/services/request-history-retention.ts`.
-- [ ] T068 [US6] Implement local request-history review and confirmed deletion routes in `src/api/request-history-routes.ts`.
+- [X] T068 [US6] Implement local request-history review and confirmed deletion routes in `src/api/request-history-routes.ts`.
 
 **Checkpoint**: The owner can review the last 30 days of redacted requests, and expired or manually deleted records are gone without affecting operation or profiles.
 

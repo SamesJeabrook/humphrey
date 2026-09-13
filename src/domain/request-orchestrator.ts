@@ -28,6 +28,7 @@ export class RequestOrchestrator {
     request.intent = intent;
     if (intent.requiresConfirmation && request.confirmation !== 'present') {
       this.transition(request, 'awaiting_confirmation');
+      await this.speech.speak("What's the magic word?", audioEndpoint.outputDevice);
       return { request, message: "What's the magic word?" };
     }
     try {
@@ -35,13 +36,16 @@ export class RequestOrchestrator {
         this.transition(request, 'executing');
         if (intent.kind === 'device_action' && intent.target && intent.action) await this.homeAssistant.callService(resolveDevice(this.devices, intent.target), intent.action, intent.parameters);
       });
+      await this.speech.speak(intent.responseText, audioEndpoint.outputDevice);
       request.outcome = 'success';
       this.transition(request, 'completed');
       return { request, message: intent.responseText };
     } catch (error) {
       request.outcome = 'failed';
       this.transition(request, 'failed');
-      return { request, message: error instanceof Error ? error.message : 'The request failed.' };
+      const message = error instanceof Error ? error.message : 'The request failed.';
+      await this.speech.speak(message, audioEndpoint.outputDevice).catch(() => undefined);
+      return { request, message };
     }
   }
 
