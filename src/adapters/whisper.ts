@@ -7,7 +7,7 @@ export class WhisperAdapter {
   constructor(private readonly executable: string, private readonly model: string) {}
 
   async transcribe(audioFile: string): Promise<string> {
-    const result = await execFileAsync(this.executable, ['-m', this.model, '-f', audioFile, '--no-timestamps'], { maxBuffer: 1024 * 1024 });
+    const result = await execFileAsync(this.executable, ['-m', this.model, '-f', audioFile, '--no-timestamps'], { maxBuffer: 1024 * 1024, timeout: 60_000 });
     return result.stdout.trim();
   }
 

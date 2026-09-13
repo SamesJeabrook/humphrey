@@ -13,8 +13,8 @@ export class PiperTextToSpeechAdapter {
     const directory = await mkdtemp(join(tmpdir(), 'humphrey-tts-'));
     const outputFile = join(directory, 'response.wav');
     try {
-      await execFileAsync(this.executable, ['--model', this.model, '--output_file', outputFile], { input: text } as never);
-      await execFileAsync('aplay', ['-D', outputDevice, outputFile]);
+      await execFileAsync(this.executable, ['--model', this.model, '--output_file', outputFile], { input: text, timeout: 30_000 } as never);
+      await execFileAsync('aplay', ['-D', outputDevice, outputFile], { timeout: 30_000 });
     } finally {
       await rm(directory, { recursive: true, force: true });
     }

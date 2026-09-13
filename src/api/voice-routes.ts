@@ -15,16 +15,29 @@ export async function registerVoiceRoutes(
   history: RequestHistoryStore,
 ): Promise<void> {
   app.post<{ Body: Buffer }>('/api/voice', async (request, reply) => {
+    const startedAt = Date.now();
+    let stage = 'upload';
+    app.log.info({ bytes: request.headers['content-length'] ?? 'unknown' }, 'voice upload received');
     if (!Buffer.isBuffer(request.body) || request.body.length === 0) return reply.code(400).send({ error: 'WAV audio is required' });
     const directory = await mkdtemp(join(tmpdir(), 'humphrey-browser-mic-'));
     const audioFile = join(directory, 'request.wav');
     try {
       await writeFile(audioFile, request.body);
+      app.log.info({ elapsedMs: Date.now() - startedAt }, 'voice upload saved');
+      stage = 'whisper';
       const transcript = await whisper.transcribe(audioFile);
+      app.log.info({ elapsedMs: Date.now() - startedAt, transcriptLength: transcript.length }, 'voice transcription complete');
       if (!transcript) return reply.code(422).send({ error: 'Whisper did not recognize speech', transcript: '' });
+      stage = 'orchestration';
       const result = await orchestrator.process(transcript, endpoint);
+      app.log.info({ elapsedMs: Date.now() - startedAt, state: result.request.state, outcome: result.request.outcome }, 'voice request processed');
+      stage = 'history';
       await history.record({ id: result.request.id, createdAt: result.request.createdAt, transcript, normalizedIntent: result.request.intent ? `${result.request.intent.kind}:${result.request.intent.target ?? 'none'}` : null, targetCapability: result.request.intent?.target, outcome: result.request.outcome ?? 'failed' });
       return reply.code(202).send({ requestId: result.request.id, transcript, state: result.request.state, outcome: result.request.outcome, message: result.message });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown local processing error';
+      app.log.error({ stage, elapsedMs: Date.now() - startedAt, error: message }, 'voice request failed');
+      return reply.code(502).send({ error: `Voice processing failed during ${stage}`, detail: message });
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
