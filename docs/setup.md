@@ -39,6 +39,11 @@ still answer `GET /health` and `GET /api/config/public`, but `/` returns a JSON 
 because `web/dist` does not exist. Never commit local config, tokens, raw audio, or
 model files.
 
+For a microphone-independent test, open the dashboard and click **Activate Humphrey**.
+Enter a command and click **Send**. This exercises the normal backend request path while
+keeping the same confirmation and Home Assistant allowlist rules. It is a text test
+control, not browser speech recognition.
+
 Before connecting the services together, follow the [local services readiness checklist](local-services-readiness.md).
 
 If a dependency or audio path fails, use the [troubleshooting guide](troubleshooting.md).

@@ -182,6 +182,13 @@ That exposes the development UI at the URL Vite prints, normally
 `http://localhost:5173`. The integrated dashboard at port `3100` is the normal runtime
 path.
 
+To test commands without relying on the microphone, open the integrated dashboard and
+click **Activate Humphrey**. Enter a command in the test field and click **Send**. The
+request goes through the normal local Ollama, intent-policy, Home Assistant, and Piper
+path. Device actions still require the final word `please` and the configured device
+allowlist. This button is a text test control; it does not use browser speech
+recognition or replace the local microphone wake-word listener.
+
 Health and configuration checks:
 
 ```bash

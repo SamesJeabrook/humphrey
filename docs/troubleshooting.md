@@ -19,6 +19,52 @@ voice pipeline until the individual local services work independently.
 `whisper-stream` continuously transcribes whatever reaches its selected capture device.
 It can hallucinate text from silence, room noise, music, or speaker feedback.
 
+Humphrey's current voice session does not use `whisper-stream`. It repeatedly records a
+short WAV with `arecord`, sends that file to `whisper-cli`, and deletes the temporary
+file. Reproduce that exact capture path manually before debugging Whisper itself.
+
+Watch the microphone level without saving audio:
+
+```bash
+arecord -D default -f S16_LE -r 16000 -c 1 -vv /dev/null
+```
+
+Speak normally. The capture meter should move clearly when you speak and remain near
+silence when you stop. Stop it with `Ctrl+C`.
+
+Capture one activation window using the same settings as Humphrey:
+
+```bash
+arecord \
+  -D default \
+  -f S16_LE \
+  -r 16000 \
+  -c 1 \
+  -d 2 \
+  /tmp/humphrey-activation.wav
+```
+
+Listen to exactly what Whisper receives:
+
+```bash
+aplay /tmp/humphrey-activation.wav
+```
+
+Then transcribe that exact file:
+
+```bash
+whisper-cli \
+  -m /path/to/ggml-base.en.bin \
+  -f /tmp/humphrey-activation.wav \
+  -l en \
+  -nt
+```
+
+If the playback is quiet, distorted, or contains the wrong microphone, fix the audio
+device/profile first. If playback is clear but this file transcription is wrong, fix
+the Whisper model or language settings. If both are correct but Humphrey misses the
+phrase, the 2-second window boundary is likely cutting off the activation phrase.
+
 First record a known sample:
 
 ```bash
