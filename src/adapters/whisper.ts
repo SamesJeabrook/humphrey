@@ -11,5 +11,7 @@ export class WhisperAdapter {
     return result.stdout.trim();
   }
 
-  isActivationPhrase(text: string): boolean { return /\b(?:hey|yo)\s+humphrey\b/i.test(text); }
+  isActivationPhrase(text: string): boolean {
+    return /\bhum(?:phrey|phry|phree|phrie|phri|fry|free)\b/i.test(text);
+  }
 }
